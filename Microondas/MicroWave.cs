@@ -100,7 +100,7 @@ namespace Microondas
 
                 else _service.showErrorMessage(message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _service.showErrorMessage("Não foi possivel aquecer o seu alimento");
             }
@@ -206,6 +206,9 @@ namespace Microondas
             var listProgramModels = new List<ProgramModel>();
 
             listProgramModels = _service.GetProgramModels();
+
+            if(model == null)
+                return "Não foi possivel encontrar o programa de aquecimento";
 
             if (model.Name.IsNull() && !model.Potency.HasPositiveValue() || model.Potency < 1 || model.Potency > 10)
                 return "Por favor informe uma potência entre 1 e 10";

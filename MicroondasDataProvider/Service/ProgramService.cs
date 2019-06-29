@@ -30,10 +30,10 @@ namespace MicroondasDataProvider.Service
 
                 if (!SearchContent.IsNull())
                 {
-                    var program = listProgramModels.FirstOrDefault(p => p.Name.ToLower().Contains(SearchContent.ToLower()));
+                    var program = listProgramModels.Where(p => p.Name.ToLower().Contains(SearchContent.ToLower())).FirstOrDefault();
+                    listProgramModels.Clear();
                     if (program != null)
                     {
-                        listProgramModels.Clear();
                         listProgramModels.Add(program);
                     }
                 }
