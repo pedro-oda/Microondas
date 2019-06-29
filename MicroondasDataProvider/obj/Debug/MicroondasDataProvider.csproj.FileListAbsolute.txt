@@ -1,0 +1,6 @@
+C:\Users\Pedro\source\repos\Microondas\MicroondasDataProvider\bin\Debug\MicroondasDataProvider.dll
+C:\Users\Pedro\source\repos\Microondas\MicroondasDataProvider\bin\Debug\MicroondasDataProvider.pdb
+C:\Users\Pedro\source\repos\Microondas\MicroondasDataProvider\obj\Debug\MicroondasDataProvider.csprojAssemblyReference.cache
+C:\Users\Pedro\source\repos\Microondas\MicroondasDataProvider\obj\Debug\MicroondasDataProvider.csproj.CoreCompileInputs.cache
+C:\Users\Pedro\source\repos\Microondas\MicroondasDataProvider\obj\Debug\MicroondasDataProvider.dll
+C:\Users\Pedro\source\repos\Microondas\MicroondasDataProvider\obj\Debug\MicroondasDataProvider.pdb

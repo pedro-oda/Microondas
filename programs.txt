@@ -1,0 +1,5 @@
+{"Name":"Frango","Time":1,"Potency":2,"HeatedMessage":null,"HeatChar":"!","Instructions":"Aperte o botao para aquecer o frango"}
+{"Name":"Carne","Time":2,"Potency":3,"HeatedMessage":null,"HeatChar":"+","Instructions":"Aperte o botao para aquecer a carne"}
+{"Name":"Arroz","Time":12,"Potency":1,"HeatChar":"@","Instructions":"Arroz soltinho"}
+{"Name":"peixe","Time":40,"Potency":5,"HeatChar":"?","Instructions":"Cozinhar peixe"}
+{"Name":"pipoca","Time":30,"Potency":5,"HeatChar":"\u003e","Instructions":"fazer pipoca"}
