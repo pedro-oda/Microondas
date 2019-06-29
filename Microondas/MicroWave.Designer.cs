@@ -180,6 +180,10 @@
             this.Cancelar.UseVisualStyleBackColor = true;
             this.Cancelar.Click += new System.EventHandler(this.Cancelar_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            // 
             // MicroWave
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

@@ -4,7 +4,6 @@ using MicroondasDataProvider.Service;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -14,7 +13,11 @@ namespace Microondas
     public partial class MicroWave : Form
     {
         ProgramService _service = new ProgramService();
+        bool isWorking = false;
         int time = 0;
+        string potencyStr = "";
+        string globalFile = "";
+        ProgramModel globalModel = new ProgramModel();
 
         public MicroWave()
         {
@@ -26,25 +29,27 @@ namespace Microondas
             FillDataGrid();
         }
 
-        private void timer1_CustomTick(object sender, EventArgs e, string potencyString, ProgramModel model, string file = "")
+        private void timer1_CustomTick(object sender, EventArgs e)
         {
-            var elapsedTime = model.Time;
+            var elapsedTime = globalModel.Time;
 
-            if (time == model.Time)
+            if (time == globalModel.Time)
             {
-                timer1.Stop();
                 timer1.Dispose();
+                timer1.Stop();
+                timer1.Tick -= timer1_CustomTick;
                 timer1.Enabled = false;
-                time = 02;
+                time = 0;
                 txtTime.Text = "00:00";
+                isWorking = false;
                 _service.showHeatedMessage(txtProgram.Text);
                 return;
             }
             txtTime.Text = ConvertSecondsToMask(elapsedTime.Value - time);
-            txtProgram.Text += potencyString;
-            if (!file.IsNull())
+            txtProgram.Text += potencyStr;
+            if (!globalFile.IsNull())
             {
-                File.AppendAllText(file, potencyString);
+                File.AppendAllText(globalFile, potencyStr);
             }
             time++;
         }
@@ -85,10 +90,12 @@ namespace Microondas
 
                 if (message.IsNull())
                 {
-                    clear();
-                    timer1.Dispose();
-                    timer1.Enabled = true;
-                    Heat(model, file);
+                    if (!isWorking)
+                    {
+                        isWorking = true;
+                        clear();
+                        Heat(model, file);
+                    }
                 }
 
                 else _service.showErrorMessage(message);
@@ -149,12 +156,17 @@ namespace Microondas
             }
         }
 
+
         protected void Heat(ProgramModel model, string file = "")
         {
-            var potencyString = PotencyString(model.Potency.Value, model.HeatChar);
-            timer1.Interval = 1000;
+            potencyStr = PotencyString(model.Potency.Value, model.HeatChar);
+            globalFile = file;
+            globalModel = model;
+            timer1.Tick += timer1_CustomTick;
+
             timer1.Start();
-            timer1.Tick += (tickSender, ev) => timer1_CustomTick(tickSender, ev, potencyString, model, file);
+
+
         }
 
         protected int? ConvertMaskToSeconds(string source)
@@ -166,6 +178,15 @@ namespace Microondas
                 if (!splitedSource[0].IsNull() && !splitedSource[1].IsNull())
                 {
                     seconds = (int.Parse(splitedSource[0]) * 60) + int.Parse(splitedSource[1]);
+                }
+                else if(splitedSource[0].IsNull() && !splitedSource[1].IsNull())
+                {
+                    seconds = int.Parse(splitedSource[1]);
+                }
+                else
+                {
+                    seconds = (int.Parse(splitedSource[0]) * 60);
+
                 }
             }
             return seconds;
@@ -224,10 +245,13 @@ namespace Microondas
             model.Potency = dgvPrograms.SelectedRows[0].Cells[2].Value.ToString().ParseIntOrDefault();
             model.Instructions = dgvPrograms.SelectedRows[0].Cells[3].Value.ToString();
             model.HeatChar = dgvPrograms.SelectedRows[0].Cells[4].Value.ToString();
-            clear();
-            timer1.Dispose();
-            timer1.Enabled = true;
-            Heat(model);
+            if (!isWorking)
+            {
+                isWorking = true;
+                clear();
+                timer1.Enabled = true;
+                Heat(model);
+            }
         }
 
         //Fazer com que o click no datagrid selecione a linha inteira
@@ -244,6 +268,7 @@ namespace Microondas
         private void btnPause_Click(object sender, EventArgs e)
         {
             timer1.Stop();
+            timer1.Enabled = true;
         }
 
         private void btnResume_Click(object sender, EventArgs e)
@@ -254,9 +279,13 @@ namespace Microondas
 
         private void Cancelar_Click(object sender, EventArgs e)
         {
+            timer1.Dispose();
+            timer1.Stop();
+            timer1.Tick -= timer1_CustomTick;
             timer1.Enabled = false;
+            time = 0;
+            isWorking = false;
             clear();
-
         }
 
         private void clear()
@@ -265,5 +294,6 @@ namespace Microondas
             txtPotency.Text = "";
             txtTime.Text = "";
         }
+
     }
 }
